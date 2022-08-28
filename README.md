@@ -21,14 +21,14 @@ The web application listens on port 8080 and exposes the following:
 javac --version
 java --version
 
-git clone 
+git clone https://github.com/fabianlee/spring-boot-gradle-remote-jdwp.git
 cd spring-boot-gradle-remote-jdwp
+
 BASEDIR=$(realpath .)
 echo "When you import the existing gradle project from Eclipse later, use this folder: $BASEDIR"
 
 # start on port 8080, JDWP debugging enabled on port 5005
 ./gradlew bootRun --debug-jvm
-
 ```
 
 ### Get copy of 3rd party source for debug step-into
@@ -40,39 +40,60 @@ git clone https://github.com/DiUS/java-faker.git java-faker-src
 cd java-faker-src
 git checkout javafaker-0.12
 
-# it will say HEAD detached, which is normal
+# HEAD detached is expected
 git branch
 
 ```
 
 ### From Eclipse IDE, start remote debugging session
 
-# make 3rd party source available for step-through
+#### make 3rd party source available for step-through
 File > Open Projects from File System
   import source=/tmp/java-faker-src
   Press "Finish"
   
-# import our web app so that we can place breakpoints, start remote debugging 
+#### import our web app so that we can place breakpoints, start remote debugging 
 File > Import > Existing Gradle Project
   Project Root Directory=the $BASEDIR output earlier  
   Press "Finish"
   
-# create breakpoint on deleted students
+#### create breakpoint on deleted students
 Open src/main/java/org/fabianlee/springbootgradleremotejdwp/ClassroomController.java
 Find method where students are deleted:
         log.debug("deleteStudent");  
 Right-click on left hand column and select "Toggle Breakpoint" at that line.
 
-# create breakpoint where user fake name is picked, so we can step-into 3rd party code
+#### create breakpoint where user fake name is picked, so we can step-into 3rd party code
 In same ClassroomController.java,
 Find method where student is added:
         String theNewName = faker.name().firstName();
 Right-click on left hand column and select "Toggle Breakpoint" at that line.
 
 
+#### create Remote Debugging session attaching to JDWP agent
 Eclipse Main Menu > Run > Debug Configurations
 Right-click "Remote Java Application", select "New Configuration"
-   
+
+  name=spring-boot-gradle-remote-jdwp
+  Press "Browse" button by project and select our imported project = springbootgradleremotejwdp
+  conection type=standard socket, host=localhost, port=5005
+
+  Select "source" tab
+  Press "Add" and then use "File System Directory" type
+  use "/tmp/java-faker-src"
+  Press "OK"
+  Press "OK"
+  
+Press "Debug" to start remote debugging session
+
+In top-right of browser, make sure you selected "debug" view (not java)
+Select Run>Resume if the app stops immediately
+
+Then from your browser open http://localhost:8080 to get started
+F6 = step over
+F8 = resume
+F5 = step into to go deeper
+
   
 
 
