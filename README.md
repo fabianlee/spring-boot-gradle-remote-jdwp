@@ -59,45 +59,41 @@ File > Import > Existing Gradle Project
 #### create breakpoint on deleted students
 Open src/main/java/org/fabianlee/springbootgradleremotejdwp/ClassroomController.java
 * Find method where students are deleted:
-*   log.debug("deleteStudent");  
+   log.debug("deleteStudent");  
 * Right-click on left hand column and select "Toggle Breakpoint" at that line.
 
 #### create breakpoint where user fake name is picked, so we can step-into 3rd party code
 In same ClassroomController.java,
 * Find method where student is added:
-*   String theNewName = faker.name().firstName();
+   String theNewName = faker.name().firstName();
 * Right-click on left hand column and select "Toggle Breakpoint" at that line.
 
 
 #### create Remote Debugging session attaching to JDWP agent
 Eclipse Main Menu > Run > Debug Configurations
-Right-click "Remote Java Application", select "New Configuration"
+* Right-click "Remote Java Application", select "New Configuration"
 
-name=spring-boot-gradle-remote-jdwp
-Press "Browse" button by project and select our imported project = springbootgradleremotejwdp
-conection type=standard socket, host=localhost, port=5005
+* name=spring-boot-gradle-remote-jdwp
+* Press "Browse" button by project and select our imported project = springbootgradleremotejwdp
+* conection type=standard socket, host=localhost, port=5005
 
-Select "source" tab
-Press "Add" and then use "File System Directory" type
-use "/tmp/java-faker-src"
-Press "OK"
-Press "OK"
+* Select "source" tab
+* Press "Add" and then use "File System Directory" type
+* use "/tmp/java-faker-src"
+* Press "OK"
+* Press "OK"
   
-Press "Debug" to start remote debugging session
+* Press "Debug" to start remote debugging session
 
-In top-right of browser, make sure you selected "debug" view (not java)
-Select Run>Resume if the app stops immediately
+### From Eclipse IDE, prepare for step-through
+
+* In top-right of browser, make sure you selected "debug" view (not java)
+* Select Run>Resume if the app stops immediately
 
 Then from your browser open http://localhost:8080 to get started
-F6 = step over
-F8 = resume
-F5 = step into to go deeper
-
-  
-
-
-
-
+* F6 = step over
+* F8 = resume
+* F5 = step into to go deeper
 
 
 
