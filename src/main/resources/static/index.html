@@ -1,0 +1,104 @@
+<html>
+<head>
+
+<style>
+.apiheader {
+	font-size: large;
+	font-weight: bold;
+	float: none;
+	margin-right: 5px;
+}
+.apiresults {
+	background-color: #cccccc;
+	//width: 800px;
+	//height: 60px;
+	//padding: 10 10 5 5;
+	font-size: small;
+	border: 1px;
+}
+
+.methodinfo {
+	font-size: medium;
+}
+
+</style>
+
+<script>
+
+function doRequest(method,URL,bearer,populateElementId) {
+
+	fetch(URL, {
+        method: method,
+        mode: 'cors', // needs to be cors so DELETE method is possible
+        credentials: 'omit',        
+        headers: {
+            'Accept': 'application/json'
+        }
+    })
+    .then((response) => {
+                if (response.ok) {
+                	console.log(response.headers.get("Content-Type") + " from " + URL);
+                	return response.json();
+                } else if (response.status == 401) {
+                	throw("AUTH ERROR bad token 401 " + response.headers.get("WWW-Authenticate"));
+                } else if (response.status == 403) {
+                	throw("AUTH ERROR permissions 403 " + response.headers.get("WWW-Authenticate"));
+                } else if (response.status == 417) {
+                	throw("ERROR 417 indicates there are no more students available to delete");
+                } else {
+                	throw("ERROR " + response.status);
+                }
+    })
+    .then((jresp) => {
+                document.getElementById(populateElementId).innerHTML = JSON.stringify(jresp,null,"\t");
+    })
+    .catch((error) => {
+                console.error('Caught error: ', error);
+                document.getElementById(populateElementId).innerHTML = error;
+                alert(error);
+    });
+    
+} // doRequest
+
+
+function callREST(method,uri,populateElementId) {
+
+  var resource_server = document.getElementById('resource_server').value;
+  var token = ''; //document.getElementById('token').value;
+  
+  doRequest(method,resource_server + uri,token,populateElementId);
+
+} // callREST
+
+</script>  	
+
+
+</head>
+<body>
+
+ 	
+<form id="dataform">
+<p>Resource Server: <input id="resource_server" type="text" value="http://localhost:9999"/></p>
+</form>
+<script>
+	document.getElementById('resource_server').value = window.location.protocol + "//" + window.location.hostname + ":" + window.location.port;
+</script>
+
+<p>&nbsp;</p>
+<span class="apiheader">GET /api/class/student</span>
+<input type="button" value="List all students" onClick="callREST('GET','/api/class/student','GETstudent')"/>
+<div><textarea id="GETstudent" cols="120" rows="15" class="apiresults"></textarea></div>
+
+<p>&nbsp;</p>
+<span class="apiheader">POST /api/class/student</span>
+<input type="button" value="Add Student" onClick="callREST('POST','/api/class/student','POSTstudent')"/>
+<div><textarea id="POSTstudent" cols="120" rows="7" class="apiresults"></textarea></div>
+
+<p>&nbsp;</p>
+<span class="apiheader">DELETE /api/class/student</span>
+<input type="button" value="Delete Student" onClick="callREST('DELETE','/api/class/student','DELETEstudent')"/>
+<div><textarea id="DELETEstudent" cols="120" rows="5" class="apiresults"></textarea></div>
+
+
+</body>
+</html>
