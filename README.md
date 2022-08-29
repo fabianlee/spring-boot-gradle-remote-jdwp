@@ -1,10 +1,10 @@
 ## spring-boot-gradle-remote-jdwp
 
-Simple Spring Boot web application that exposes REST api, used to show how gradle built project 
+Simple Spring Boot web application that exposes a REST api, used to show how gradle built project 
 can be remotely debugged via JDWP from Eclipse IDE with breakpoints and tracing into 3rd 
 party source libraries.
 
-Full blog walk-through at: 
+Full blog walk-through at: https://fabianlee.org/2022/08/29/gradle-interactive-jdwp-debugging-of-bootrun-gradle-task-in-eclipse-ide/
 
 The web application listens on port 8080 and exposes the following:
 
@@ -46,28 +46,21 @@ git branch
 
 ### From Eclipse IDE, start remote debugging session
 
+#### import our web app so that we can place breakpoints, start remote debugging 
+File > Import > Existing Gradle Project
+* Project Root Directory=the $BASEDIR output earlier  
+* Press "Finish"
+
 #### make 3rd party source available for step-through
 File > Open Projects from File System
 * import source=/tmp/java-faker-src
 * Press "Finish"
   
-#### import our web app so that we can place breakpoints, start remote debugging 
-File > Import > Existing Gradle Project
-* Project Root Directory=the $BASEDIR output earlier  
-* Press "Finish"
-  
-#### create breakpoint on deleted students
-Open src/main/java/org/fabianlee/springbootgradleremotejdwp/ClassroomController.java
-* Find method where students are deleted:
-   log.debug("deleteStudent");  
-* Right-click on left hand column and select "Toggle Breakpoint" at that line.
-
 #### create breakpoint where user fake name is picked, so we can step-into 3rd party code
-In same ClassroomController.java,
+Open src/main/java/org/fabianlee/springbootgradleremotejdwp/ClassroomController.java
 * Find method where student is added:
    String theNewName = faker.name().firstName();
 * Right-click on left hand column and select "Toggle Breakpoint" at that line.
-
 
 #### create Remote Debugging session attaching to JDWP agent
 Eclipse Main Menu > Run > Debug Configurations
